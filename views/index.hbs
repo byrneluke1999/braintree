@@ -2,12 +2,13 @@
     <div id="checkout-message"></div>
     <div id="dropin-container"></div>
     <button id="submit-button">Submit payment</button>
+    <button id="refund-button">Refund payment</button>
 </div>
 <script>
     var button = document.querySelector('#submit-button');
+    var rebutton = document.querySelector('#refund-button')
 
     braintree.dropin.create({
-        // Insert your tokenization key here
         authorization: 'sandbox_csyf53wf_c86s6scrc4fk24mc',
         container: '#dropin-container'
     }, function (createErr, instance) {
@@ -26,8 +27,9 @@
                             console.error('Could not tear down Drop-in UI!');
                         } else {
                             console.info('Drop-in UI has been torn down!');
-                            // Remove the 'Submit payment' button
+                            // Remove the buttons
                             $('#submit-button').remove();
+                            $('#refund-button').remove();
                         }
                     });
 
@@ -39,6 +41,37 @@
                     }
                 });
             });
+        })
+        rebutton.addEventListener('click', function () {
+            instance.requestPaymentMethod(function (requestPaymentMethodErr, payload) {
+                // When the user clicks on the 'Refund payment' button this code will send the
+                // encrypted payment information in a variable called a payment method nonce
+                $.ajax({
+                    type: 'POST',
+                    url: '/refund',
+                    data: { 'paymentMethodNonce': payload.nonce }
+                }).done(function (result) {
+                    // Tear down the Drop-in UI
+                    instance.teardown(function (teardownErr) {
+                        if (teardownErr) {
+                            console.error('Could not tear down Drop-in UI!');
+                        } else {
+                            console.info('Drop-in UI has been torn down!');
+                            // Remove the 'Submit payment' button
+                            $('#refund-button').remove();
+                            $('#submit-button').remove();
+                        }
+                    });
+
+                    if (result.success) {
+                        $('#checkout-message').html(`<h1>Refund ID: ${result.transaction.id}</h1>`);
+                    } else {
+                        console.log(result);
+                        $('#checkout-message').html(`<h1>${result.message}</h1><p>Check your console for info on the refund.</p>`);
+                    }
+                });
+            });
         });
     });
+
 </script>
