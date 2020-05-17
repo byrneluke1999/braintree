@@ -39,18 +39,21 @@
                         transID = result.transaction.id
                         $('#checkout-message').html(`<h1>Your payment has been submitted succesfully!</h1><h2>Transaction ID: ${result.transaction.id}</h2>`);
                     } else {
-                        console.log(result);
-                        $('#checkout-message').html(`<h1>${result.message}</h1>`);
+                        $('#checkout-message').html(`<h1>There has been an issue with your payment.</h1><p> ${result.message}</p>`);
                     }
                 });
             });
         })
+        //After implementing the process of submitting a transaction I was unsure with how a refund should be presented then processed. I made the decision
+        //to include the option for a refund on the same page as the section to input card details, because it made the most sense for me- hypothetically the refund
+        //money would have to be put back into a bank account so it seemed logical for the card details to be inputted again for a refund to be carried out, even
+        //if the card details aren't reused in my implementation. 
         rebutton.addEventListener('click', function () {
             instance.requestPaymentMethod(function (requestPaymentMethodErr, payload) {
                 // When the user clicks on the 'Refund payment' button this code will perform the refund of the transaction. I wanted it to be dynamic
                 // in the sense that the user could refund the transaction they just submitted. However, I had some difficulties trying to achieve that.
-                // I thought passing hte id in the post method below would have done it, but that wasn't the case. Right now I just have a fixed Id to be
-                // refunded which has already been refunded (in testing) so that is why the message is the same everytime.
+                // I thought passing the id in the post method below would have done it, but that wasn't the case. Right now I just have a fixed Id to be
+                // refunded (which has already been refunded in testing) so that is why the message is the same everytime.
                 $.ajax({
                     type: 'POST',
                     url: '/refund',
@@ -72,8 +75,7 @@
                         //<h1>Your transaction (ID : transID) has been refunded succesfully!</h1>
                         $('#checkout-message').html(`<h1>Your payment has been refunded succesfully!</h1><p>Refund ID: ${result.transaction.id}</p>`);
                     } else {
-                        console.log(result);
-                        $('#checkout-message').html(`<h1>${result.message}</h1>`);
+                        $('#checkout-message').html(`<h1>There has been an issue with the refund.</h1> <p>${result.message}</P>`);
                     }
                 });
             });

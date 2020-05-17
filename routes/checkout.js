@@ -13,7 +13,7 @@ router.post("/", function (req, res, next) {
   // payment nonce from index.hbs
   var nonceFromTheClient = req.body.paymentMethodNonce;
   // I chose a fixed fee of 50 euro for all transactions
-  var newTransaction = gateway.transaction.sale(
+  var Transaction = gateway.transaction.sale(
     {
       amount: "50.00",
       paymentMethodNonce: nonceFromTheClient,
