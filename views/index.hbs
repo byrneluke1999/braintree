@@ -1,3 +1,4 @@
+<h1 id="title">Please input your card details to submit or refund your payment.</h1>
 <div id="dropin-wrapper">
     <div id="checkout-message"></div>
     <div id="dropin-container"></div>
@@ -5,9 +6,10 @@
     <button id="refund-button">Refund payment</button>
 </div>
 <script>
+    var title = document.querySelector("#title")
     var button = document.querySelector('#submit-button');
     var rebutton = document.querySelector('#refund-button');
-    var transID
+    //var transID
     braintree.dropin.create({
         authorization: 'sandbox_csyf53wf_c86s6scrc4fk24mc',
         container: '#dropin-container'
@@ -27,29 +29,32 @@
                             console.error('Could not tear down Drop-in UI!');
                         } else {
                             console.info('Drop-in UI has been torn down!');
-                            // Remove the buttons
+                            // clear page
                             $('#submit-button').remove();
                             $('#refund-button').remove();
+                            $('#title').remove();
                         }
                     });
                     if (result.success) {
                         transID = result.transaction.id
-                        $('#checkout-message').html(`<h1>Transaction ID: ${result.transaction.id}</h1>`);
+                        $('#checkout-message').html(`<h1>Your payment has been submitted succesfully!</h1><h2>Transaction ID: ${result.transaction.id}</h2>`);
                     } else {
                         console.log(result);
-                        $('#checkout-message').html(`<h1>${result.message}</h1><p>Check your console.</p>`);
+                        $('#checkout-message').html(`<h1>${result.message}</h1>`);
                     }
                 });
             });
         })
         rebutton.addEventListener('click', function () {
             instance.requestPaymentMethod(function (requestPaymentMethodErr, payload) {
-                // When the user clicks on the 'Refund payment' button this code will send the
-                // encrypted payment information in a variable called a payment method nonce
+                // When the user clicks on the 'Refund payment' button this code will perform the refund of the transaction. I wanted it to be dynamic
+                // in the sense that the user could refund the transaction they just submitted. However, I had some difficulties trying to achieve that.
+                // I thought passing hte id in the post method below would have done it, but that wasn't the case. Right now I just have a fixed Id to be
+                // refunded which has already been refunded (in testing) so that is why the message is the same everytime.
                 $.ajax({
                     type: 'POST',
                     url: '/refund',
-                    data: { 'transactionID': transID }
+                    //data: { 'transactionID': transID }
                 }).done(function (result) {
                     // Tear down the Drop-in UI
                     instance.teardown(function (teardownErr) {
@@ -57,16 +62,18 @@
                             console.error('Could not tear down Drop-in UI!');
                         } else {
                             console.info('Drop-in UI has been torn down!');
-                            // Remove the 'Submit payment' button
+                            // clear page
                             $('#refund-button').remove();
                             $('#submit-button').remove();
+                            $('#title').remove();
                         }
                     });
                     if (result.success) {
-                        $('#checkout-message').html(`<h1>Refund ID: ${result.transaction.id}</h1>`);
+                        //<h1>Your transaction (ID : transID) has been refunded succesfully!</h1>
+                        $('#checkout-message').html(`<h1>Your payment has been refunded succesfully!</h1><p>Refund ID: ${result.transaction.id}</p>`);
                     } else {
                         console.log(result);
-                        $('#checkout-message').html(`<h1>${result.message}</h1><p>Check your console for info on the refund.</p>`);
+                        $('#checkout-message').html(`<h1>${result.message}</h1>`);
                     }
                 });
             });
