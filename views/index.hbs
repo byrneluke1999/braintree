@@ -6,8 +6,8 @@
 </div>
 <script>
     var button = document.querySelector('#submit-button');
-    var rebutton = document.querySelector('#refund-button')
-
+    var rebutton = document.querySelector('#refund-button');
+    var transID
     braintree.dropin.create({
         authorization: 'sandbox_csyf53wf_c86s6scrc4fk24mc',
         container: '#dropin-container'
@@ -32,8 +32,8 @@
                             $('#refund-button').remove();
                         }
                     });
-
                     if (result.success) {
+                        transID = result.transaction.id
                         $('#checkout-message').html(`<h1>Transaction ID: ${result.transaction.id}</h1>`);
                     } else {
                         console.log(result);
@@ -49,7 +49,7 @@
                 $.ajax({
                     type: 'POST',
                     url: '/refund',
-                    data: { 'paymentMethodNonce': payload.nonce }
+                    data: { 'transactionID': transID }
                 }).done(function (result) {
                     // Tear down the Drop-in UI
                     instance.teardown(function (teardownErr) {
@@ -62,7 +62,6 @@
                             $('#submit-button').remove();
                         }
                     });
-
                     if (result.success) {
                         $('#checkout-message').html(`<h1>Refund ID: ${result.transaction.id}</h1>`);
                     } else {
@@ -73,5 +72,4 @@
             });
         });
     });
-
 </script>

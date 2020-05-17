@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 var braintree = require("braintree");
 
+refundId = "jqhc4jjf";
 router.post("/", function (req, res, next) {
   var gateway = braintree.connect({
     environment: braintree.Environment.Sandbox,
@@ -13,8 +14,9 @@ router.post("/", function (req, res, next) {
 
   // Use the payment method nonce here
   var nonceFromTheClient = req.body.paymentMethodNonce;
+  console.log("ID is ", req.body.transactionID);
   // Create a new transaction for $10
-  var newTransaction = gateway.transaction.refund("qwagdaq2", function (
+  var newTransaction = gateway.transaction.refund(refundId, function (
     error,
     result
   ) {

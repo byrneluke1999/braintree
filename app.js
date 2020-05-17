@@ -11,6 +11,8 @@ var checkout = require("./routes/checkout");
 // The refund route
 var refund = require("./routes/refund");
 
+var transResp = require("./routes/transResp");
+
 var app = express();
 
 // view engine setup
@@ -29,6 +31,8 @@ app.use("/users", usersRouter);
 app.use("/checkout", checkout);
 
 app.use("/refund", refund);
+
+app.use("/transResp", transResp);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
