@@ -5,9 +5,9 @@ var braintree = require("braintree");
 router.post("/", function (req, res, next) {
   var gateway = braintree.connect({
     environment: braintree.Environment.Sandbox,
-    merchantId: "c86s6scrc4fk24mc",
-    publicKey: "kj9p8zzs8kgssf9c",
-    privateKey: "d92b87d4432e98140bdd1e51e17bdd37",
+    merchantId: "XYZ",
+    publicKey: "XYZ",
+    privateKey: "XYZ",
   });
 
   // payment nonce from index.hbs
