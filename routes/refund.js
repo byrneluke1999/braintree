@@ -6,9 +6,9 @@ refundId = "rrg45tyd"; //taken after completing a succesful transaction.
 router.post("/", function (req, res, next) {
   var gateway = braintree.connect({
     environment: braintree.Environment.Sandbox,
-    merchantId: "c86s6scrc4fk24mc",
-    publicKey: "kj9p8zzs8kgssf9c",
-    privateKey: "d92b87d4432e98140bdd1e51e17bdd37",
+    merchantId: "XYZ",
+    publicKey: "XYZ",
+    privateKey: "XYZ",
   });
   //I tried passsing the transaction Id from the just processed payment to this route as the transaction id for the refund, but this of course
   //wasn't going to work because the page is refreshed when navigating back to process a refund. (See the next line.)
